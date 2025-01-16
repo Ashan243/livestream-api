@@ -1,0 +1,21 @@
+
+
+XSS - Cross Script Security Attacks
+
+1. Local Storage is a Broswser ONLY API - Only access this on client side
+2. Cookies are tokenized data generate by the server -
+    a. Cookies be either persistent or session specific
+    b. HttyOnly configuration means that the client side JS code cannot access the token
+    c. Secure and SameSite
+
+Why do backend servers architechiture use cookies over localStorage
+1.  Security - Cookies can be obsecured from the client side accessing them to maniuplate the values,
+               Reduces XSS Attacks
+
+2. Session binding - We can use cookies to to bind session to specific website domains and subdomains,
+                    Better Security constains 
+
+                    Domain: www.google.com
+                    SubDomain: www.google.com/search/users
+
+3. Automatic Transmission - For each HTTP request to endpoint the cookies would sent to client side

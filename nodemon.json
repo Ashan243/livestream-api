@@ -1,0 +1,7 @@
+{
+
+    "watch": ["websocket"],
+    "ext": "ts",
+    "ignore": ["dist"],
+    "exec":  "npx ts-node websocket/index.ts"    
+}

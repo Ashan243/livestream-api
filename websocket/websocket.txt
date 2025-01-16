@@ -1,0 +1,14 @@
+
+
+
+
+
+
+Websocket and HTTP API on the same port
+1. Shared Session ID information between users
+2. Share  jwt access token betwwen both sides of the API
+
+
+Seperate Auth Logic for Websocket and HTTP API
+1. If there different of access requirement e.g role level to access different areas of the API
+2. Very specific usebase for websocket and the HTtP 
