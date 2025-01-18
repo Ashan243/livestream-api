@@ -1,6 +1,6 @@
 import http from "http"
 import {Server, Socket} from "socket.io"
-import { ClientToServerEvents, ServerToClientEvents } from "./eventtypes"
+import { ClientSignal, ClientToServerEvents, ServerToClientEvents } from "./eventtypes"
 
 
 
@@ -33,10 +33,19 @@ io.on("connection", (socket: Socket) => {
     //handle joining a room
     socket.on("joinRoom", (roomId: string) => {
         socket.join(roomId) //User joins the room
-        rooms[roomId] = rooms[roomId] || []
+    //If there is a room by the id sent from the client then we set room
+    //If not we initial a new room 
+        rooms[roomId] = rooms[roomId] || [] 
+
         //Add the user to the room
-        rooms[roomId].push(socket.id)
         socket.to(roomId).emit("userJoined", socket.id)
         console.log("User with id of" + socket.id + "the room")
     })
+    //Handle signal connection
+    socket.on("sendSignal", (data: ClientSignal) => {
+        socket.to(data.to).emit("receiveSignal", {
+            from: socket.id,
+            signal: data.signal
+        })
+    } )
 })
