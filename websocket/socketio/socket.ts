@@ -18,31 +18,25 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
 //ServerClient Interactions
 //Websocket configurations
 
+//string = key
+//string = values
+const rooms: Record<string, string[]> = {
+ 
+}
+
+
+
 io.on("connection", (socket: Socket) => {
-
-    //Connection event - The moment when the client side connects to the websocket serer
-    socket.on("connection", (event: string) => {
-        console.log("Connected")
+    console.log("We have connected to our WebRTC service")
+    
+  
+    //handle joining a room
+    socket.on("joinRoom", (roomId: string) => {
+        socket.join(roomId) //User joins the room
+        rooms[roomId] = rooms[roomId] || []
+        //Add the user to the room
+        rooms[roomId].push(socket.id)
+        socket.to(roomId).emit("userJoined", socket.id)
+        console.log("User with id of" + socket.id + "the room")
     })
-    //Subscribing to a room event 
-    socket.on("subscribe", (event: string) => {
-        socket.join(event)
-        console.log(`Client with socket id of: ${socket.id} has subscrived to the event of: ${event} `)
-    })
-
-
-
-
-        socket.on("custom_disconnect", () => {
-            console.log("User has disconnected" + socket.id)
-            socket.disconnect()
-        })
-        socket.on("disconnect", (reason) => {
-            //ping timeout 
-            //transport close - the client closed the connection
-            //transport error - Error at the TLS 
-            //server namespace disconnect - Server manually discounts the client
-            //client namespace disconnect - Client disconnected themselves manually
-            socket.emit(`User with ${socket.id} has disconnected because of the following: ${reason}`)
-        })
 })
