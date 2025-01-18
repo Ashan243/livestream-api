@@ -48,4 +48,10 @@ io.on("connection", (socket: Socket) => {
             signal: data.signal
         })
     } )
+
+    //Handle disconnection event
+    socket.on("disconnect", (roomId: string) => {
+        rooms[roomId] = rooms[roomId].filter((id) => id !== socket.id)
+        //
+    })
 })
