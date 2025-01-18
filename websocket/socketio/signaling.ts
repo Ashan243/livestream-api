@@ -16,7 +16,11 @@ export const handlingSignalingServices = (socket: Socket) => {
         socket.broadcast.emit("answer", data)
     })
 
-    //
+    //ICE Candidate
+    socket.on("ice-candidate", (data) => {
+        socket.emit("ice-candidate", data)
+        
+    })
 
 
 }
