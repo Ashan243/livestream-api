@@ -1,16 +1,17 @@
 import http from "http"
 import {Server, Socket} from "socket.io"
 import { ClientSignal, ClientToServerEvents, ServerToClientEvents } from "./eventtypes"
+import express from "express"
 
 
+const app = express()
+const mainServer = http.createServer(app)
 
-const server = http.createServer({})
-
-
-const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
+const io = new Server<ClientToServerEvents, ServerToClientEvents>(mainServer, {
     cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"],
+       
     }
 })
 
@@ -27,15 +28,22 @@ const rooms: Record<string, string[]> = {
 
 
 io.on("connection", (socket: Socket) => {
+    console.log(socket.id)
     console.log("We have connected to our WebRTC service")
     
   
     //handle joining a room
     socket.on("joinRoom", (roomId: string) => {
+        console.log(roomId)
         socket.join(roomId) //User joins the room
     //If there is a room by the id sent from the client then we set room
     //If not we initial a new room 
-        rooms[roomId] = rooms[roomId] || [] 
+        try {
+            rooms[roomId] = rooms[roomId] || [] 
+            
+        } catch (error) {
+            console.error(error)
+        }
 
         //Add the user to the room
         socket.to(roomId).emit("userJoined", socket.id)
@@ -51,7 +59,12 @@ io.on("connection", (socket: Socket) => {
 
     //Handle disconnection event
     socket.on("disconnect", (roomId: string) => {
+        if(rooms[roomId])
         rooms[roomId] = rooms[roomId].filter((id) => id !== socket.id)
         //
     })
 })
+
+
+
+mainServer.listen((process.env.PORT ?? 3000), () =>{console.log(`listening on Port: ${process.env.PORT ?? 3000}`)})
