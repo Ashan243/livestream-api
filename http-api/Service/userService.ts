@@ -31,3 +31,5 @@ export class UserServices{
         return await userModel.createUser(userData) 
     }
 }
+
+export default UserServices
