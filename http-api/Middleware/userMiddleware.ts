@@ -7,7 +7,7 @@ import { Request, Response, NextFunction }from "express"
 
 
 
-const validateSchema = (schema: ObjectSchema) =>{
+export const validateSchema = (schema: ObjectSchema) =>{
     return (req: Request, res: Response, next: NextFunction) =>{
         const {error} = schema.validate(req.body, {abortEarly: false})
         if(error){

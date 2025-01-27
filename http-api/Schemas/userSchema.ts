@@ -1,7 +1,7 @@
 
 import joi from "joi"
 
-export const createUser = joi.object({
+export const userSiginupSchema = joi.object({
 
     id: joi.string().required(),
     email: joi.string().min(8).max(255).required(),
