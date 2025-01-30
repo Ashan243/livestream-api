@@ -3,5 +3,5 @@
     "watch": ["websocket"],
     "ext": "ts",
     "ignore": ["dist"],
-    "exec":  "npx ts-node websocket/socketio/socket.ts"    
+    "exec":  "npx ts-node index.ts"    
 }

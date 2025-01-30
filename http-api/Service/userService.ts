@@ -16,7 +16,7 @@ export class UserServices{
     }
 
     static async findUserById(id: string){
-        return await userModel.getUserById(id)
+        return await userModel.findUserById(id)
     }
 
     static async patchUserById(userId: string, updates: Partial<userModel.User> ){
@@ -29,6 +29,10 @@ export class UserServices{
 
     static async createUser(userData: userModel.User){
         return await userModel.createUser(userData) 
+    }
+
+    static async deleteUser(userEmail: string){
+        await userModel.deleteUser(userEmail)
     }
 }
 

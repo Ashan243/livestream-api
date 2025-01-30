@@ -9,7 +9,7 @@ export interface User{
     email: string
     username: string
     password: string
-    mobile: number
+    mobile: string
 }
 
 //Get all users
@@ -29,10 +29,9 @@ const getUserById = async(id: string): Promise<QueryResult<any>> => {
 const createUser = async(userData: User): Promise<QueryResult<any>> => {
     
         const { username, email, password, mobile} = userData
-        let userReq = userData
         const id = cuid()
         const hashedPassword = await bcrypt.hash(password, 10)
-        const user = await queryHandler('INSERT INTO users (id, username, email, password, mobile) VALUE ($1, $2, $3, $4, $5) RETURNING *', [id, username, email, hashedPassword, mobile])
+        const user = await queryHandler('INSERT INTO users (id, username, email, password, mobile) VALUES ($1, $2, $3, $4, $5) RETURNING *', [id, username, email, hashedPassword, mobile])
         return user.rows[0]
     
     }
@@ -60,24 +59,27 @@ const patchUpdateById = async(userId: string, updates: Partial<User>): Promise<v
         throw new Error("No new data given") //this is th handle the case of no data received
     }
     //grab the values
-    if(dbFields.length === 1){
+    
         const userValues = Object.values(updates)
         //{id: 10, name: Michael} = [10, Michael]
         console.log("User Values using Object", userValues)
-        //SQL - SET 
-        //1values - in an Array
-        //Output is string (SQL Statment)
-        //SET field = value, field2 = values2, 
-        //e.g user updates 3 fields = $1, $2, $3
+        console.log(userValues[0] + " at index 0 test")
+        console.log(userValues + " full value test")
+        console.log(dbFields[0])
+        console.log(userValues)
+        console.log(userId)
 
-        //$ to show that we want place dynamic in the statement
-        //$ for the template
-        //$${}
-        //..userValue -> ... Symbol.iterator()
-       
-        const user = await queryHandler(`UPDATE user SET ${dbFields[0]} = $1${userValues[0]} WHERE id = $2} `, [...userValues, userId])
+        console.log([...userValues])
+
+    //        const updateQuery = format(
+    //     'UPDATE users SET %L = $1 WHERE id = $2',
+    //     ...dbFields.map(field => `${field} = ${updates[field]}`)
+    // );
+
+       console.log(`UPDATE users SET ${dbFields[0]} = ${userValues[0]} WHERE id = $2`)
+        const user = await queryHandler(`UPDATE users SET ${dbFields[0]} = $1 WHERE id = $2`, [userValues[0], userId])
         return user.rows[0]
-}
+
 }
 const updateUserById = async(userId: string, updates: Partial<User>): Promise<void |QueryResult<any>> =>{
     
@@ -101,13 +103,15 @@ const updateUserById = async(userId: string, updates: Partial<User>): Promise<vo
         //1values - in an Array
         //Output is string (SQL Statment)
         //SET field = value, field2 = values2, 
-        const setClause = userValues.map((field, index) => `${field} = $${index + 1}`).join(", ") //e.g user updates 3 fields = $1, $2, $3
+        const setClause = dbFields.map((field, index) => `${field} = $${index + 1}`).join(", ") //e.g user updates 3 fields = $1, $2, $3
+        console.log(setClause)
+        console.log(`UPDATE users SET ${setClause} WHERE id = $${dbFields.length + 1 } RETURNING *`)
         //3 ITMES TO BE UPDATED = $1
         //$ to show that we want place dynamic in the statement
         //$ for the template
         //$${}
         //..userValue -> ... Symbol.iterator()
-        const user = await queryHandler(`UPDATE user SET ${setClause} WHERE id = $${dbFields.length + 1 }} `, [...userValues, userId])
+        const user = await queryHandler(`UPDATE users SET ${setClause} WHERE id = $${dbFields.length + 1 } RETURNING *`, [...userValues, userId])
         return user.rows[0]
 
 
@@ -116,19 +120,22 @@ const updateUserById = async(userId: string, updates: Partial<User>): Promise<vo
 
 
 //Delete
-const deleteUser = async(email: string): Promise<void> =>{
-    if(email.includes("@")){
-    await queryHandler("DELETE FROM user WHERE email", [email])
+const deleteUser = async(email: string): Promise<void>  =>{
+    console.log(email)
+    if(email.includes("@")){    
+    await queryHandler(`DELETE FROM users WHERE email = $1 RETURNING *`, [email])
 }
- 
+ console.log("Email must contain an @")
 }
+
+
 
 export {
     getAllUsers,
-    getUserById,
     updateUserById,
     patchUpdateById,
     deleteUser,
-    createUser
+    createUser,
+    findUserById
     
 }
