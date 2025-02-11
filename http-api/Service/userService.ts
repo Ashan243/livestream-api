@@ -28,7 +28,7 @@ export class UserServices{
     }
 
     static async createUser(userData: userModel.User){
-        return await userModel.createUser(userData) 
+        return await userModel.createUser(userData) //user
     }
 
     static async deleteUser(userEmail: string){

@@ -28,10 +28,10 @@ const clients: IClient[] = [] //Client Websocket Object Array
 
 ///The Connection event listener that listens for new client side users join the websocket server
 //On connect we would write all of the code that happen to a client to prepare or server usage
-wss.on("connection", (ws: WebSocket, req: Request ) =>{
+wss.on("connection", (ws: WebSocket) =>{
     //Verify a user
-    // const authToken = req.headers["x-token"]
-    // if(!authToken){
+
+    // if(!userKey){
 
     //     //Log error with winston
     //     //Connect datadog api here to pick up on error
@@ -39,7 +39,7 @@ wss.on("connection", (ws: WebSocket, req: Request ) =>{
     //     ws.send(String(errorcodes.NO_AUTH_TOKEN.code)) //Use for the client side so that we can use for troubleshooting errors
     //     ws.close(errorcodes.CONNECTION_UNSTABLE.code, errorcodes.CONNECTION_UNSTABLE.reason)
     //     return 
-    // }
+    // // }
     
     // try {
 

@@ -2,7 +2,7 @@ import { QueryResult } from "pg"
 import { connectionPool, queryHandler } from "../Database/db"
 import bcrypt from "bcrypt"
 import cuid from "cuid"
-
+import axios from "axios"
 export interface User{
 
     id: string
@@ -12,6 +12,8 @@ export interface User{
     mobile: string
 }
 
+
+
 //Get all users
  //Define curd operations
 
@@ -20,19 +22,25 @@ export interface User{
     return users.rows; //Return the rows of the data for the user 
 }
 
-const getUserById = async(id: string): Promise<QueryResult<any>> => {
+const getUserById = async(id: string): Promise<QueryResult<User>> => {
     const user = await queryHandler("SELECT FROM users WHERE id = $1", [id])
     return user.rows[0]
 }
 
 //Create
-const createUser = async(userData: User): Promise<QueryResult<any>> => {
+const createUser = async(userData: User): Promise<QueryResult<User>> => {
     
         const { username, email, password, mobile} = userData
         const id = cuid()
         const hashedPassword = await bcrypt.hash(password, 10)
         const user = await queryHandler('INSERT INTO users (id, username, email, password, mobile) VALUES ($1, $2, $3, $4, $5) RETURNING *', [id, username, email, hashedPassword, mobile])
-        return user.rows[0]
+        console.log(user.rows[0])
+
+        //Generate Refresh Token
+
+
+        //Generate Acess
+        return user 
     
     }
 
@@ -40,7 +48,9 @@ const createUser = async(userData: User): Promise<QueryResult<any>> => {
 const findUserById = async(id: string): Promise<QueryResult<any>> =>{
 
  
-    const user = await queryHandler("SELECT * FROM user WHERE id = $1", [id])
+    const user = await queryHandler("SELECT * FROM users WHERE id = $1", [id])
+    console.log(user.rows[0])
+    console.log(user.rowCount)
     return user.rows[0]
 }
 
@@ -130,12 +140,16 @@ const deleteUser = async(email: string): Promise<void>  =>{
 
 
 
+
+
+
 export {
     getAllUsers,
     updateUserById,
     patchUpdateById,
     deleteUser,
     createUser,
-    findUserById
+    findUserById,
+    
     
 }

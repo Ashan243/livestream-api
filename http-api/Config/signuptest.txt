@@ -1,0 +1,50 @@
+// "use strict";
+// var __assign = (this && this.__assign) || function () {
+//     __assign = Object.assign || function(t) {
+//         for (var s, i = 1, n = arguments.length; i < n; i++) {
+//             s = arguments[i];
+//             for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+//                 t[p] = s[p];
+//         }
+//         return t;
+//     };
+//     return __assign.apply(this, arguments);
+// };
+// Object.defineProperty(exports, "__esModule", { value: true });
+// exports.options = void 0;
+// exports.default = default_1;
+// var k6_1 = require("k6");
+// var http_1 = require("k6/http");
+// exports.options = {
+//     stages: [
+//         //Duration and target
+//         { duration: '10s', target: 100 }
+//     ],
+//     thresholds: {
+//         http_req_duration: ['p(95)<500'], //95% of transaction must happen under 500ms,
+//         http_req_failed: ['rate<0.01'] //Less than 1 % failure rate]
+//     }
+// };
+// //1. Signup
+// var signup = function (userData) {
+//     var payload = JSON.stringify(__assign({}, userData));
+//     var params = {
+//         headers: {
+//             "Content-Type": 'application/json',
+//         }
+//     };
+//     var res = http_1.default.post("http://localhost:3000/api/v1/users/createusers", payload, params);
+//     (0, k6_1.check)(res, {
+//         "signup succesful": function (r) { return r.status === 201; }
+//     });
+// };
+// function default_1() {
+//     (0, k6_1.group)("Signup Performance Test", function () {
+//         //__VU = virtual user id - randomise value 
+//         var username = "ashan123".concat(__VU);
+//         var password = "password";
+//         var email = "email".concat(__VU, "@email.com");
+//         var mobile = "075672941".concat(__VU);
+//         signup({ email: email, password: password, username: username, mobile: mobile });
+//     });
+// }
